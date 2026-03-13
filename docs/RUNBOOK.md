@@ -11,6 +11,7 @@
 
 ```bash
 make setup CONOHA_HOST=<VPS_IP>
+
 ```
 
 > `gogocoin.service` を変更した場合はサービスの再起動が必要です:
@@ -45,6 +46,7 @@ make setup CONOHA_HOST=<VPS_IP>
 
 ```bash
 make tunnel CONOHA_HOST=<VPS_IP>
+
 ```
 
 ブラウザで `http://localhost:8080` を開きます。
@@ -68,6 +70,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "systemctl stop gogocoin"
 
 # 起動
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "systemctl start gogocoin"
+
 ```
 
 ---
@@ -82,6 +85,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -n 50"
 
 # リアルタイム追跡
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -f"
+
 ```
 
 ### アプリログファイル
@@ -89,6 +93,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -f"
 ```bash
 # 直近 100 行
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "tail -n 100 /opt/gogocoin/logs/gogocoin.log"
+
 ```
 
 ---
@@ -99,6 +104,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "tail -n 100 /opt/gogocoin/logs/gogocoin.lo
 
 ```bash
 make config CONOHA_HOST=<VPS_IP>
+
 ```
 
 サーバー上で直接編集する場合:
@@ -107,6 +113,7 @@ make config CONOHA_HOST=<VPS_IP>
 ssh -i ~/.ssh/gogocoin root@<VPS_IP>
 vim /opt/gogocoin/configs/config.yaml
 systemctl restart gogocoin
+
 ```
 
 ---
@@ -131,6 +138,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "ps aux | grep gogocoin"
 
 # ディスク使用量
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "df -h /opt/gogocoin && du -sh /opt/gogocoin/*"
+
 ```
 
 ---
@@ -141,6 +149,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "df -h /opt/gogocoin && du -sh /opt/gogocoi
 
 ```bash
 make backup CONOHA_HOST=<VPS_IP>
+
 ```
 
 `./backup/<タイムスタンプ>/` 以下に保存されます:

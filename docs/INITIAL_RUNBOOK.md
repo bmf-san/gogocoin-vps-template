@@ -23,6 +23,7 @@ VPS の IP アドレスと SSH 秘密鍵をメモしておきます。
 ```bash
 chmod 600 ~/.ssh/gogocoin
 ssh -i ~/.ssh/gogocoin root@<VPS_IP>
+
 ```
 
 > SSH 鍵のパスを変更した場合は `Makefile` の `SSH_KEY` 変数を合わせて変更してください。
@@ -35,6 +36,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP>
 
 ```bash
 make setup CONOHA_HOST=<VPS_IP>
+
 ```
 
 スクリプトが完了すると以下が整います:
@@ -53,6 +55,7 @@ gogocoin リポジトリの `configs/config.example.yaml` を参考に `configs/
 
 ```bash
 make config CONOHA_HOST=<VPS_IP>
+
 ```
 
 > `GOGOCOIN_DIR` のデフォルトは `../gogocoin` です。異なる場所にある場合は `make config CONOHA_HOST=<VPS_IP> GOGOCOIN_DIR=/path/to/gogocoin` で指定してください。
@@ -67,6 +70,7 @@ make config CONOHA_HOST=<VPS_IP>
 
 ```makefile
 CONOHA_HOST  ?= <VPS_IP>  # ← ここに IP を記入
+
 ```
 
 ---
@@ -103,12 +107,14 @@ CONOHA_HOST  ?= <VPS_IP>  # ← ここに IP を記入
 
 ```bash
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "systemctl status gogocoin"
+
 ```
 
 `active (running)` と表示されれば正常です。
 
 ```bash
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -n 50"
+
 ```
 
 ---
@@ -119,6 +125,7 @@ ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -n 50"
 
 ```bash
 make tunnel CONOHA_HOST=<VPS_IP>
+
 ```
 
 ブラウザで `http://localhost:8080` を開きます。
@@ -131,6 +138,7 @@ make tunnel CONOHA_HOST=<VPS_IP>
 
 ```bash
 ssh -i ~/.ssh/gogocoin root@<VPS_IP> "journalctl -u gogocoin -n 100"
+
 ```
 
 よくある原因:
