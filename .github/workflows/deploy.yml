@@ -1,0 +1,76 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'デプロイする gogocoin の ref（タグ例: v1.0.0、またはブランチ: main）'
+        required: true
+        default: 'main'
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: gogocoin をチェックアウト
+        uses: actions/checkout@v4
+        with:
+          # TODO: フォーク先のリポジトリ名に変更してください
+          repository: bmf-san/gogocoin
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Go セットアップ
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache: true
+
+      - name: ビルド依存パッケージのインストール
+        run: sudo apt-get install -y gcc libsqlite3-dev
+
+      - name: バイナリビルド
+        run: CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gogocoin ./cmd/gogocoin
+
+      - name: SSH キーをセットアップ
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.CONOHA_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.CONOHA_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: バイナリを転送
+        run: |
+          rsync -az \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./gogocoin \
+            ${{ secrets.CONOHA_USER }}@${{ secrets.CONOHA_HOST }}:/opt/gogocoin/gogocoin
+
+      - name: web/ を転送
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./web/ \
+            ${{ secrets.CONOHA_USER }}@${{ secrets.CONOHA_HOST }}:/opt/gogocoin/web/
+
+      - name: .env をサーバーへ書き込む
+        env:
+          BITFLYER_API_KEY: ${{ secrets.BITFLYER_API_KEY }}
+          BITFLYER_API_SECRET: ${{ secrets.BITFLYER_API_SECRET }}
+        run: |
+          printf 'BITFLYER_API_KEY=%s\nBITFLYER_API_SECRET=%s\n' \
+            "$BITFLYER_API_KEY" "$BITFLYER_API_SECRET" | \
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.CONOHA_USER }}@${{ secrets.CONOHA_HOST }} \
+            "cat > /opt/gogocoin/.env && chmod 600 /opt/gogocoin/.env && chown gogocoin:gogocoin /opt/gogocoin/.env"
+
+      - name: パーミッション設定 & サービス再起動
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            ${{ secrets.CONOHA_USER }}@${{ secrets.CONOHA_HOST }} \
+            "chown -R gogocoin:gogocoin /opt/gogocoin/gogocoin /opt/gogocoin/web \
+             && chmod 755 /opt/gogocoin/gogocoin \
+             && systemctl restart gogocoin \
+             && systemctl is-active gogocoin"

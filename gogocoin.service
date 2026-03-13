@@ -1,0 +1,22 @@
+[Unit]
+Description=gogocoin - bitFlyer 自動取引ボット
+After=network.target
+
+[Service]
+Type=simple
+User=gogocoin
+WorkingDirectory=/opt/gogocoin
+EnvironmentFile=/opt/gogocoin/.env
+ExecStart=/opt/gogocoin/gogocoin
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gogocoin
+
+# セキュリティ設定
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
