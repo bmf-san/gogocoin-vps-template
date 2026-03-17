@@ -51,14 +51,31 @@ make setup CONOHA_HOST=<VPS_IP>
 
 ## 4. config.yaml を配置する
 
-gogocoin リポジトリの `configs/config.example.yaml` を参考に `configs/config.yaml` を作成し、以下で転送します:
+config.yaml の配置方法は以下の2通りです。
+
+**推奨: このリポジトリに `configs/config.yaml` を置く**
+
+カスタム戦略リポジトリ（`go.mod` で gogocoin を参照するパターン）では、このリポジトリに `configs/` を作成して管理します:
+
+```bash
+mkdir configs
+cp path/to/config.example.yaml configs/config.yaml
+# config.yaml を編集後:
+make config CONOHA_HOST=<VPS_IP>
+```
+
+`make config` は `./configs/config.yaml` が存在すればそちらを優先して転送します。
+
+**代替: gogocoin リポジトリの config.yaml を使う**
+
+gogocoin をそのまま使う場合は、`configs/config.example.yaml` を参考に `configs/config.yaml` を作成して転送します:
 
 ```bash
 make config CONOHA_HOST=<VPS_IP>
 
 ```
 
-> `GOGOCOIN_DIR` のデフォルトは `../gogocoin` です。異なる場所にある場合は `make config CONOHA_HOST=<VPS_IP> GOGOCOIN_DIR=/path/to/gogocoin` で指定してください。
+> デフォルトでは `../gogocoin/configs/config.yaml` を参照します。異なる場所にある場合は `make config CONOHA_HOST=<VPS_IP> GOGOCOIN_DIR=/path/to/gogocoin` で指定してください。
 
 > `config.yaml` 内の `${BITFLYER_API_KEY}` / `${BITFLYER_API_SECRET}` は `.env` の値で自動展開されます。`.env` はデプロイ時に GitHub Secrets から自動生成されるため手動作成は不要です。
 

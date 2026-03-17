@@ -18,7 +18,13 @@ jobs:
       - name: gogocoin をチェックアウト
         uses: actions/checkout@v4
         with:
-          # TODO: フォーク先のリポジトリ名に変更してください
+          # デフォルト: bmf-san/gogocoin をそのままデプロイ（デフォルトのスキャルピング戦略を使用）
+          #
+          # カスタム戦略を使用する場合（推奨）:
+          #   1. 自分のリポジトリに go.mod + cmd/gogocoin/main.go を用意
+          #      (参考: https://github.com/bmf-san/gogocoin/blob/main/docs/DESIGN_DOC.md#5-%E3%83%97%E3%83%A9%E3%82%AC%E3%83%96%E3%83%AB%E6%88%A6%E7%95%A5%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3pkg)
+          #   2. 下記 repository を自分のリポジトリ名に変更（例: myname/my-gogocoin）
+          #   3. go.mod が gogocoin を参照するため bitflyer/gogocoin の別チェックアウトは不要
           repository: bmf-san/gogocoin
           ref: ${{ github.event.inputs.ref }}
 
