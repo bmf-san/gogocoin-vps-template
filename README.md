@@ -78,4 +78,10 @@ make tunnel CONOHA_HOST=<VPS_IP>
 ## 動作確認環境
 
 - Ubuntu 24.04 LTS
-- gogocoin v0.x（[bmf-san/gogocoin](https://github.com/bmf-san/gogocoin)）
+- gogocoin v1.x（[bmf-san/gogocoin](https://github.com/bmf-san/gogocoin)）
+
+## カスタム戦略について
+
+gogocoin v1.x 以降、`pkg/strategy.Strategy` インターフェースを実装することで独自の取引戦略を差し込めます。
+カスタム戦略を使用する場合は、gogocoin をフォークするのではなく、自分のリポジトリに `go.mod` で `github.com/bmf-san/gogocoin` を参照し、`engine.Run()` を呼び出す `cmd/gogocoin/main.go` を作成してください。
+詳細は [gogocoin DESIGN_DOC.md §5](https://github.com/bmf-san/gogocoin/blob/main/docs/DESIGN_DOC.md) を参照してください。
