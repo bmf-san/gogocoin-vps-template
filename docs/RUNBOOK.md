@@ -155,3 +155,27 @@ make backup CONOHA_HOST=<VPS_IP>
 `./backup/<タイムスタンプ>/` 以下に保存されます:
 - `logs/` ← gogocoin.log
 - `data/` ← gogocoin.db
+
+### バックアップのローテーション
+
+`make backup` の末尾で `make backup-rotate` が自動実行され、`./backup/` 配下を最新 `BACKUP_RETAIN` 件 (デフォルト 30) まで剪定します。古い世代から削除されます。
+
+```bash
+make backup-rotate                    # デフォルト (30件保持)
+BACKUP_RETAIN=5 make backup-rotate    # 5件まで減らす
+```
+
+クラウド側 (例: GitHub Artifact による自動バックアップを別途構築している場合) はこの Make ターゲットの影響を受けません。
+
+---
+
+## データ保持期間（`retention_days`）
+
+gogocoin v1.x は `configs/config.yaml` の `database.retention_days` で SQLite に蓄積する market_data / trades の保持日数を制御できます (デフォルト: 90 日)。
+
+```yaml
+database:
+  retention_days: 90   # 0 にすると無制限
+```
+
+長期間運用する場合はディスク使用量を観測し、必要に応じて値を縮める / `make backup` で定期取得した上で `retention_days` を短縮するなど運用してください。詳細は [gogocoin/docs/DATA_MANAGEMENT.ja.md](https://github.com/bmf-san/gogocoin/blob/main/docs/DATA_MANAGEMENT.ja.md) を参照。
