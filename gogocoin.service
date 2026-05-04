@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=gogocoin
+Group=gogocoin
 WorkingDirectory=/opt/gogocoin
 EnvironmentFile=/opt/gogocoin/.env
 ExecStart=/opt/gogocoin/gogocoin
@@ -14,9 +15,37 @@ StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=gogocoin
 
-# セキュリティ設定
+# --- セキュリティ / サンドボックス ---
 NoNewPrivileges=true
 PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# アプリが書き込む必要があるパスのみ許可
+ReadWritePaths=/opt/gogocoin/data /opt/gogocoin/logs
+
+# --- リソース制限 ---
+CPUQuota=80%
+MemoryMax=512M
+TasksMax=256
+LimitNOFILE=4096
 
 [Install]
 WantedBy=multi-user.target
